@@ -88,20 +88,12 @@ async function handleGithubCallback(request, env, corsHeaders) {
 
 	const userData = await userResponse.json()
 
-	// // Insert account data into the d1 database
-	// try {
-	// 	await insertAccountData(env, tokenData, userData)
-	// } catch (error) {
-	// 	console.error('Database Insert Error:', error)
-	// 	return responseFailed(null, 'Failed to insert account data into database', 500, corsHeaders)
-	// }
-
-
 	// *********************** Create JWT token ***********************
 	const token = await sign(
 		{
-			sub: userData.id.toString(),
-			login: userData.login,
+			userid: userData.id.toString(),
+			username: userData.login,
+			email: userData.email,
 			name: userData.name,
 			avatar: userData.avatar_url,
 			exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60,
