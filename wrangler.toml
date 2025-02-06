@@ -29,13 +29,6 @@ port = 8787
 # Environment Variables
 # https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
 # vars = { MY_VARIABLE = "production_value" }
-[vars]
-GITHUB_CLIENT_ID = "Ov23limgUacE0XjmDcqA"
-GITHUB_CLIENT_SECRET = "c7b8530c3dbbcdb59a21b405976d17fde7a279ef"
-JWT_SECRET = "65Szi9jymTHZuzCM3zu1V8jueZs6oA6YGx7ZTSWFqik="
-ALLOWED_ORIGIN = "https://genealeaderboard.github.io"
-NEXT_PUBLIC_WORKER_URL = "https://auth.hemvip.workers.dev"
-
 
 # Note: Use secrets to store sensitive data.
 # https://developers.cloudflare.com/workers/configuration/secrets/
