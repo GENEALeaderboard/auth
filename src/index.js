@@ -1,5 +1,6 @@
 import { sign, verify } from '@tsndr/cloudflare-worker-jwt'
 import { responseError, responseFailed, responseSuccess } from './response'
+import {getCookie} from './utils'
 // import { insertAccountData } from './insertAccountData'
 
 export default {
@@ -107,17 +108,17 @@ async function handleGithubCallback(request, env, corsHeaders) {
 
 	// Set the Set-Cookie header using the correct method
 	const responseWithCookie = new Response(response.body, response)
-	responseWithCookie.headers.set('Set-Cookie', `auth-token=${token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${24 * 60 * 60}`)
+	responseWithCookie.headers.set('Set-Cookie', `genea-auth-token=${token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${24 * 60 * 60}`)
 
 	return responseWithCookie
 }
 
 async function handleGetUser(request, env, corsHeaders) {
 	const cookies = request.headers.get('Cookie') || ''
-	const tokenMatch = cookies.match(/auth-token=([^;]+)/)
-	const token = tokenMatch ? tokenMatch[1] : null
+	const token = getCookie(cookies, 'genea-auth-token')
 
 	if (!token) {
+		console.log("cookies", cookies)
 		return responseFailed(null, 'No token provided', 401, corsHeaders)
 	}
 
