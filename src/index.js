@@ -39,6 +39,7 @@ export default {
 async function handleGithubCallback(request, env, corsHeaders) {
 	const url = new URL(request.url)
 	const code = url.searchParams.get('code')
+	console.log("url", url, "code", code)
 
 	if (!code) {
 		return responseFailed(null, 'No code provided', 400, corsHeaders)
