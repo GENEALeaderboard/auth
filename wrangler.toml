@@ -16,6 +16,9 @@ database_id = "36316b2a-afc7-4db4-a639-a68d4f8b212c"
 [dev]
 port = 8787
 
+[vars]
+ALLOWED_ORIGIN="https://genealeaderboard.github.io"
+GITHUB_CLIENT_ID="Ov23limgUacE0XjmDcqA"
 
 # Smart Placement
 # Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
