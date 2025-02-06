@@ -1,4 +1,3 @@
-// Utility function to get a cookie by name
 export function getCookie(cookieHeader, name) {
 	if (!cookieHeader) return null
 	const cookies = cookieHeader.split(';')
