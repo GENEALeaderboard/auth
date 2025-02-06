@@ -1,5 +1,6 @@
 import { sign, verify } from '@tsndr/cloudflare-worker-jwt'
 import { responseError, responseFailed, responseSuccess } from './response'
+// import { insertAccountData } from './insertAccountData'
 
 export default {
 	async fetch(request, env, ctx) {
@@ -87,7 +88,16 @@ async function handleGithubCallback(request, env, corsHeaders) {
 
 	const userData = await userResponse.json()
 
-	// Create JWT token
+	// // Insert account data into the d1 database
+	// try {
+	// 	await insertAccountData(env, tokenData, userData)
+	// } catch (error) {
+	// 	console.error('Database Insert Error:', error)
+	// 	return responseFailed(null, 'Failed to insert account data into database', 500, corsHeaders)
+	// }
+
+
+	// *********************** Create JWT token ***********************
 	const token = await sign(
 		{
 			sub: userData.id.toString(),
