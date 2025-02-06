@@ -12,6 +12,8 @@ export default {
 			'Access-Control-Allow-Credentials': 'true',
 		}
 
+		console.log("env.ALLOWED_ORIGIN", env.ALLOWED_ORIGIN)
+
 		if (request.method === 'OPTIONS') {
 			// Handle CORS preflight requests
 			return new Response(null, { headers: corsHeaders })
@@ -108,7 +110,7 @@ async function handleGithubCallback(request, env, corsHeaders) {
 
 	// Set the Set-Cookie header using the correct method
 	const responseWithCookie = new Response(response.body, response)
-	responseWithCookie.headers.set('Set-Cookie', `genea-auth-token=${token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${24 * 60 * 60}`)
+	responseWithCookie.headers.set('Set-Cookie', `genea-auth-token=${token}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=${24 * 60 * 60}`)
 
 	return responseWithCookie
 }
@@ -137,7 +139,7 @@ async function handleGetUser(request, env, corsHeaders) {
 async function handleLogout(request, env, corsHeaders) {
 	const response = new Response(JSON.stringify({ success: true }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
 
-	response.headers.set('Set-Cookie', 'auth-token=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0')
+	response.headers.set('Set-Cookie', 'genea-auth-token=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0')
 
 	return response
 }
