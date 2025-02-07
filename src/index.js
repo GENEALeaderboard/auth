@@ -108,9 +108,8 @@ async function handleGithubCallback(request, env, corsHeaders) {
 	// Set the Set-Cookie header using the correct method
 	const responseWithCookie = new Response(response.body, response)
 	const environment = env.ENVIRONMENT || 'development'
-	console.log('environment', environment)
-	const secure = 'Secure;' // environment === 'production' ? 'Secure;' : ''
 	responseWithCookie.headers.set('Set-Cookie', `genea-auth-token=${token}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=${24 * 60 * 60}`)
+	responseWithCookie.headers.set('Set-Cookie', `genea-auth-token=${token}; Domain=${env.NEXT_PUBLIC_API_ENDPOINT}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=${24 * 60 * 60}`)
 
 	return responseWithCookie
 }
