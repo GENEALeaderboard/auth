@@ -138,10 +138,9 @@ async function handleGetUser(request, env, corsHeaders) {
 
 async function handleLogout(request, env, corsHeaders) {
 	const response = new Response(JSON.stringify({ success: true }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
-	const isLocalhost = request.headers.get('host')?.includes('localhost')
+	const secure = env.ENVIRONMENT === 'development' ? 'SameSite=Lax;' : 'Secure; SameSite=None;'
 
-	// response.headers.set('Set-Cookie', `genea-auth-token=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0`)
-	response.headers.set('Set-Cookie', `genea-auth-token=; Path=/; HttpOnly; ${isLocalhost ? 'SameSite=Lax' : 'Secure; SameSite=None'}; Max-Age=0`)
+	response.headers.set('Set-Cookie', `genea-auth-token=; Path=/; HttpOnly; ${secure} Max-Age=0`)
 
 	return response
 }
