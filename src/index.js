@@ -12,8 +12,6 @@ export default {
 			'Access-Control-Allow-Credentials': 'true',
 		}
 
-		console.log('env.ALLOWED_ORIGIN', env.ALLOWED_ORIGIN)
-
 		if (request.method === 'OPTIONS') {
 			// Handle CORS preflight requests
 			return new Response(null, { headers: corsHeaders })
@@ -42,7 +40,6 @@ export default {
 async function handleGithubCallback(request, env, corsHeaders) {
 	const url = new URL(request.url)
 	const code = url.searchParams.get('code')
-	console.log('url', url, 'code', code)
 
 	if (!code) {
 		return responseFailed(null, 'No code provided', 400, corsHeaders)
@@ -111,7 +108,9 @@ async function handleGithubCallback(request, env, corsHeaders) {
 	// Set the Set-Cookie header using the correct method
 	const responseWithCookie = new Response(response.body, response)
 	const environment = env.ENVIRONMENT || 'development'
-	responseWithCookie.headers.set('Set-Cookie', `genea-auth-token=${token}; Path=/; HttpOnly; ${environment === 'production' ? 'Secure;' : ''} SameSite=None; Max-Age=${24 * 60 * 60}`)
+	console.log('environment', environment)
+	const secure = 'Secure;' // environment === 'production' ? 'Secure;' : ''
+	responseWithCookie.headers.set('Set-Cookie', `genea-auth-token=${token}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=${24 * 60 * 60}`)
 
 	return responseWithCookie
 }
@@ -139,10 +138,10 @@ async function handleGetUser(request, env, corsHeaders) {
 
 async function handleLogout(request, env, corsHeaders) {
 	const response = new Response(JSON.stringify({ success: true }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
-	const environment = env.ENVIRONMENT || 'development'
-	console.log('environment', environment)
+	const isLocalhost = request.headers.get('host')?.includes('localhost')
 
-	response.headers.set('Set-Cookie', `genea-auth-token=; Path=/; HttpOnly; ${environment === 'production' ? 'Secure;' : ''} SameSite=None; Max-Age=0`)
+	// response.headers.set('Set-Cookie', `genea-auth-token=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0`)
+	response.headers.set('Set-Cookie', `genea-auth-token=; Path=/; HttpOnly; ${isLocalhost ? 'SameSite=Lax' : 'Secure; SameSite=None'}; Max-Age=0`)
 
 	return response
 }
