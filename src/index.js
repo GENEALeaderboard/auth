@@ -109,7 +109,7 @@ async function handleGithubCallback(request, env, corsHeaders) {
 	const responseWithCookie = new Response(response.body, response)
 	const environment = env.ENVIRONMENT || 'development'
 	responseWithCookie.headers.set('Set-Cookie', `genea-auth-token=${token}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=${24 * 60 * 60}`)
-	responseWithCookie.headers.set('Set-Cookie', `genea-auth-token=${token}; Domain=${env.NEXT_PUBLIC_API_ENDPOINT}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=${24 * 60 * 60}`)
+	responseWithCookie.headers.set('Set-Cookie', `genea-api-token=${token}; Domain=${env.NEXT_PUBLIC_API_ENDPOINT}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=${24 * 60 * 60}`)
 
 	return responseWithCookie
 }
@@ -140,6 +140,7 @@ async function handleLogout(request, env, corsHeaders) {
 	const secure = env.ENVIRONMENT === 'development' ? 'SameSite=Lax;' : 'Secure; SameSite=None;'
 
 	response.headers.set('Set-Cookie', `genea-auth-token=; Path=/; HttpOnly; ${secure} Max-Age=0`)
+	response.headers.set('Set-Cookie', `genea-api-token=; Domain=${env.NEXT_PUBLIC_API_ENDPOINT}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=${24 * 60 * 60}`)
 
 	return response
 }
