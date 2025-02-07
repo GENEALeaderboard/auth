@@ -1,6 +1,6 @@
 import { sign, verify } from '@tsndr/cloudflare-worker-jwt'
 import { responseError, responseFailed, responseSuccess } from './response'
-import {getCookie} from './utils'
+import { getCookie } from './utils'
 // import { insertAccountData } from './insertAccountData'
 
 export default {
@@ -12,7 +12,7 @@ export default {
 			'Access-Control-Allow-Credentials': 'true',
 		}
 
-		console.log("env.ALLOWED_ORIGIN", env.ALLOWED_ORIGIN)
+		console.log('env.ALLOWED_ORIGIN', env.ALLOWED_ORIGIN)
 
 		if (request.method === 'OPTIONS') {
 			// Handle CORS preflight requests
@@ -42,7 +42,7 @@ export default {
 async function handleGithubCallback(request, env, corsHeaders) {
 	const url = new URL(request.url)
 	const code = url.searchParams.get('code')
-	console.log("url", url, "code", code)
+	console.log('url', url, 'code', code)
 
 	if (!code) {
 		return responseFailed(null, 'No code provided', 400, corsHeaders)
@@ -110,7 +110,8 @@ async function handleGithubCallback(request, env, corsHeaders) {
 
 	// Set the Set-Cookie header using the correct method
 	const responseWithCookie = new Response(response.body, response)
-	responseWithCookie.headers.set('Set-Cookie', `genea-auth-token=${token}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=${24 * 60 * 60}`)
+	const environment = env.ENVIRONMENT || 'development'
+	responseWithCookie.headers.set('Set-Cookie', `genea-auth-token=${token}; Path=/; HttpOnly; ${environment === 'production' ? 'Secure;' : ''} SameSite=None; Max-Age=${24 * 60 * 60}`)
 
 	return responseWithCookie
 }
@@ -120,7 +121,7 @@ async function handleGetUser(request, env, corsHeaders) {
 	const token = getCookie(cookies, 'genea-auth-token')
 
 	if (!token) {
-		console.log("cookies", cookies)
+		console.log('cookies', cookies)
 		return responseFailed(null, 'No token provided', 401, corsHeaders)
 	}
 
@@ -138,8 +139,10 @@ async function handleGetUser(request, env, corsHeaders) {
 
 async function handleLogout(request, env, corsHeaders) {
 	const response = new Response(JSON.stringify({ success: true }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+	const environment = env.ENVIRONMENT || 'development'
+	console.log('environment', environment)
 
-	response.headers.set('Set-Cookie', 'genea-auth-token=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0')
+	response.headers.set('Set-Cookie', `genea-auth-token=; Path=/; HttpOnly; ${environment === 'production' ? 'Secure;' : ''} SameSite=None; Max-Age=0`)
 
 	return response
 }

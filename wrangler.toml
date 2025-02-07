@@ -19,6 +19,7 @@ port = 8787
 [vars]
 ALLOWED_ORIGIN = "https://genealeaderboard.github.io"
 GITHUB_CLIENT_ID = "Ov23li4Jpr0iorMBiOPt"
+ENVIRONMENT = "production"
 
 # Smart Placement
 # Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
